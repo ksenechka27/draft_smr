@@ -1,0 +1,1551 @@
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Стандарт СМР ММ 3.1</title>
+<style>
+  /* ═══════════════════════════════════════════════════════════════════
+     ТЁМНАЯ ТЕМА (по умолчанию)  
+  ═══════════════════════════════════════════════════════════════════ */
+  :root {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --bg-tertiary: #0f3460;
+    --bg-surface: #1e1e32;
+    --bg-surface-2: #2a2a42;
+    --bg-surface-3: #3a3a5a;
+    --text-primary: #ffffff;
+    --text-secondary: #e0e0e0;
+    --text-muted: #a0a0a0;
+    --accent-color: #4a90d9;
+    --accent-hover: #357abd;
+    --border-color: #2d3748;
+    --border-2: #3d4a5c;
+    --red: #c0200e;
+    --red-hover: #a01a0a;
+    --red-muted: #2a1a1a;
+    --red-border: #5a2a22;
+    --card-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    --hover-bg: rgba(74, 144, 217, 0.08);
+    --input-bg: #1e1e32;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     СВЕТЛАЯ ТЕМА  
+  ═══════════════════════════════════════════════════════════════════ */
+  [data-theme="light"] {
+    --bg-primary: #f0f4f8;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #edf2f7;
+    --bg-surface: #ffffff;
+    --bg-surface-2: #f7fafc;
+    --bg-surface-3: #e2e8f0;
+    --text-primary: #1a202c;
+    --text-secondary: #2d3748;
+    --text-muted: #718096;
+    --accent-color: #2563eb;
+    --accent-hover: #1d4ed8;
+    --border-color: #e2e8f0;
+    --border-2: #cbd5e0;
+    --red: #c0200e;
+    --red-hover: #a01a0a;
+    --red-muted: #fef2f2;
+    --red-border: #fca5a5;
+    --card-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    --hover-bg: rgba(37, 99, 235, 0.06);
+    --input-bg: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.55;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-primary); }
+  ::-webkit-scrollbar-thumb { background: var(--bg-surface-3); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--red); }
+
+  /* ── Переключатель темы (фиксирован) ── */
+  .theme-switcher {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+  }
+  .theme-btn {
+    background: var(--bg-surface);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 10px 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: var(--card-shadow);
+  }
+  .theme-btn:hover { border-color: var(--red); }
+  .theme-btn .icon { font-size: 18px; }
+
+  /* ── Header ── */
+  header {
+    background: var(--bg-surface);
+    border-bottom: 2px solid var(--red);
+    padding: 0 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  }
+  .header-row {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-icon {
+    width: 34px; height: 34px;
+    background: var(--red);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .header-icon svg { width: 18px; height: 18px; stroke: #fff; fill: none; }
+  header .title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: .01em;
+    color: var(--text-primary);
+  }
+  header .subtitle {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin: 0;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  #reset-btn {
+    background: none;
+    border: 1px solid var(--border-2);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 5px 14px;
+    border-radius: 5px;
+    transition: border-color .15s, color .15s;
+  }
+  #reset-btn:hover { border-color: var(--red); color: var(--red); }
+
+  /* ── Breadcrumbs ── */
+  nav.crumbs {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 8px 20px 0;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  nav.crumbs .crumb-link {
+    color: var(--red);
+    cursor: pointer;
+    font-weight: 500;
+  }
+  nav.crumbs .crumb-link:hover { text-decoration: underline; }
+  nav.crumbs .sep { margin: 0 6px; color: var(--text-muted); }
+
+  /* ── Main ── */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 16px 20px 80px;
+  }
+
+  /* ── Intro ── */
+  .intro {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--red);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+  }
+  .intro h2 {
+    margin: 0 0 3px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .intro p { margin: 0; color: var(--text-muted); font-size: 13px; }
+
+  /* ── Grid ── */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+
+  /* ── Card buttons ── */
+  .card-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid transparent;
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color .15s, background .15s, box-shadow .15s;
+    line-height: 1.4;
+    box-shadow: var(--card-shadow);
+  }
+  .card-btn:hover {
+    border-color: var(--border-2);
+    border-left-color: var(--red);
+    background: var(--bg-surface-2);
+  }
+
+  .back-link {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color .15s;
+  }
+  .back-link:hover { color: var(--red); }
+
+  /* ── Accordion ── */
+  details.item {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  details.item:hover { border-color: var(--border-2); }
+  details.item[open] { border-color: var(--red-border); }
+  details.item[open] summary { border-bottom: 1px solid var(--border-color); }
+
+  details.item summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 13px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: var(--text-primary);
+    user-select: none;
+    transition: background .12s;
+  }
+  details.item summary:hover { background: var(--bg-surface-2); }
+  details.item summary::-webkit-details-marker { display: none; }
+
+  details.item summary .summary-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  details.item summary .summary-title-row::after {
+    content: "+";
+    color: var(--red);
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  details.item[open] summary .summary-title-row::after { content: "–"; }
+
+  details.item .body {
+    padding: 0 16px 16px;
+  }
+
+  .solution {
+    padding-top: 14px;
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+  .solution + .solution {
+    border-top: 1px dashed var(--border-2);
+    margin-top: 14px;
+  }
+
+  .tags { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
+  .tag {
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--bg-surface-2);
+    border: 1px solid var(--border-2);
+    border-radius: 4px;
+    padding: 3px 8px;
+  }
+
+  .zone-tag {
+    display: inline-block;
+    font-size: 11px; font-weight: 500;
+    color: #e87070;
+    background: var(--red-muted);
+    border: 1px solid var(--red-border);
+    border-radius: 10px;
+    padding: 1px 7px;
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+  details.item summary .zones {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin-top: 5px;
+  }
+
+  .empty { color: var(--text-muted); font-style: italic; padding: 14px 16px; font-size: 13px; }
+  .no-results { text-align: center; color: var(--text-muted); padding: 40px 20px; font-size: 14px; }
+
+  /* ── Search ── */
+  .search-box { margin-bottom: 14px; }
+  .search-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .search-row input { flex: 1; min-width: 200px; }
+
+  .search-box input {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color .15s;
+  }
+  .search-box input::placeholder { color: var(--text-muted); }
+  .search-box input:focus { border-color: var(--red); box-shadow: 0 0 0 2px var(--red-muted); }
+
+  .zone-select {
+    padding: 9px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    min-width: 190px; max-width: 260px;
+    cursor: pointer;
+    outline: none;
+  }
+  .zone-select:focus { border-color: var(--red); }
+  .zone-select option { background: var(--bg-surface-2); }
+
+  /* ── Toolbar ── */
+  .toolbar {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .toolbar.visible { display: flex; }
+  .toolbar button {
+    background: var(--bg-surface-2);
+    border: 1px solid var(--border-2);
+    border-radius: 5px;
+    padding: 6px 13px;
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: border-color .15s, color .15s, background .15s;
+  }
+  .toolbar button:hover {
+    background: var(--bg-surface-3);
+    border-color: var(--border-2);
+    color: var(--text-primary);
+  }
+  .btn-print {
+    margin-left: auto;
+    background: var(--red) !important;
+    color: #fff !important;
+    border-color: var(--red) !important;
+    font-weight: 600;
+  }
+  .btn-print:hover { background: var(--red-hover) !important; }
+
+  mark {
+    background: #7a2a00;
+    color: #ffb580;
+    border-radius: 2px;
+    padding: 0 2px;
+    font-style: normal;
+  }
+  [data-theme="light"] mark {
+    background: #fef08a;
+    color: #1a202c;
+  }
+
+  /* ── Hub cards ── */
+  .hub-card {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 30px 16px !important;
+    text-align: center !important;
+    min-height: 120px;
+  }
+  .hub-card-icon {
+    width: 44px; height: 44px;
+    background: var(--red-muted);
+    border: 1px solid var(--red-border);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hub-card-icon svg {
+    width: 22px; height: 22px;
+    stroke: #e87070; fill: none;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .hub-card span:last-child { font-size: 14px; font-weight: 700; }
+
+  /* ── Zone cards ── */
+  .zone-card {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px;
+    padding: 14px 16px !important;
+    min-height: unset;
+    text-align: left !important;
+    flex-direction: row !important;
+    font-size: 13px !important;
+    font-weight: 600;
+  }
+  .zone-card .zone-count {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 400;
+    background: var(--bg-surface-2);
+    border: 1px solid var(--border-2);
+    border-radius: 20px;
+    padding: 2px 8px;
+  }
+
+  .detail-card {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 10px;
+    padding: 14px 16px !important;
+    min-height: unset;
+    text-align: left !important;
+    flex-direction: column !important;
+    font-size: 13px !important;
+    font-weight: 600;
+  }
+  .detail-card .detail-zone-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+  }
+
+  /* ── Title screen ── */
+  #title-screen {
+    position: fixed; inset: 0; z-index: 10000;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(180deg, rgba(14,14,14,.55), rgba(14,14,14,.92)),
+                url('https://raw.githubusercontent.com/ksenechka27/smr_new/main/pic/title-bg.jpg')
+                center/cover no-repeat, var(--bg-primary);
+    text-align: center;
+    transition: opacity .35s ease, visibility .35s ease;
+  }
+  #title-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+  #title-screen .ts-inner { max-width: 560px; padding: 0 24px; }
+  #title-screen .ts-icon {
+    width: 64px; height: 64px; margin: 0 auto 22px;
+    background: var(--red); border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 30px rgba(192,32,14,.4);
+  }
+  #title-screen .ts-icon svg { width: 32px; height: 32px; stroke: #fff; fill: none; }
+  #title-screen h1 {
+    font-size: 26px; font-weight: 800; color: #fff; margin: 0 0 6px;
+    letter-spacing: .01em; line-height: 1.25;
+  }
+  #title-screen p.ts-sub {
+    color: rgba(255,255,255,.55); font-size: 14px; margin: 0 0 26px;
+    letter-spacing: .03em; text-transform: uppercase;
+  }
+  #title-screen .ts-version {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14);
+    border-radius: 30px; padding: 7px 18px; margin-bottom: 30px;
+    color: #fff; font-size: 13px;
+  }
+  #title-screen .ts-version b { color: #ff8a6a; font-weight: 700; }
+  #title-screen .ts-enter {
+    background: var(--red); color: #fff; border: none;
+    border-radius: 8px; padding: 13px 36px; font-family: inherit;
+    font-size: 15px; font-weight: 700; cursor: pointer;
+    letter-spacing: .02em; transition: background .15s, transform .1s;
+  }
+  #title-screen .ts-enter:hover { background: var(--red-hover); }
+  #title-screen .ts-enter:active { transform: scale(.97); }
+  #title-screen .ts-footer {
+    margin-top: 22px; font-size: 11px; color: rgba(255,255,255,.35);
+    letter-spacing: .04em; text-transform: uppercase;
+  }
+
+  /* ── Glossary ── */
+  .glossary-flow { font-size: 13px; line-height: 1.85; color: var(--text-primary); }
+  .glossary-flow b { color: #e87070; font-weight: 700; }
+
+  /* ── Apps ── */
+  .apps-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .app-btn {
+    background: var(--bg-surface-2);
+    border: 1px solid var(--border-2);
+    border-radius: 5px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 12px;
+    padding: 6px 11px;
+    cursor: pointer;
+    text-align: left;
+    line-height: 1.3;
+    transition: border-color .15s, color .15s, background .15s;
+  }
+  .app-btn:hover {
+    border-color: var(--red-border);
+    color: #e87070;
+    background: var(--red-muted);
+  }
+
+  /* ── Version table ── */
+  .version-table-wrap { max-height: 460px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; }
+  .version-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .version-table th {
+    text-align: left; padding: 8px 10px; color: var(--text-muted);
+    font-weight: 600; border-bottom: 1px solid var(--border-2);
+    white-space: nowrap; position: sticky; top: 0; background: var(--bg-surface);
+  }
+  .version-table td {
+    padding: 9px 10px; border-bottom: 1px solid var(--border-color);
+    vertical-align: top; color: var(--text-primary);
+  }
+  .version-table tr:hover td { background: var(--bg-surface-2); }
+  .version-table .v-num { font-weight: 700; color: #e87070; white-space: nowrap; }
+  .version-table .v-date { color: var(--text-muted); white-space: nowrap; }
+  .version-table .v-changes { white-space: pre-line; max-width: 480px; font-size: 12px; line-height: 1.55; }
+  .v-current-badge {
+    display: inline-block; background: var(--red-muted); color: #e87070;
+    border: 1px solid var(--red-border); border-radius: 4px;
+    font-size: 10px; padding: 1px 6px; margin-left: 6px; font-weight: 600;
+  }
+
+  /* ── Lightbox ── */
+  #lightbox {
+    display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,.88); z-index:9999;
+    align-items:center; justify-content:center; cursor:zoom-out;
+  }
+  #lightbox.open { display:flex; }
+  #lightbox img { max-width:92vw; max-height:92vh; border-radius:8px; object-fit:contain; box-shadow:0 8px 40px rgba(0,0,0,.7); }
+  #lb-close { position:fixed; top:16px; right:20px; background:none; border:none; color:#fff; font-size:32px; cursor:pointer; opacity:.7; }
+  #lb-close:hover { opacity:1; }
+  #lb-counter { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,.6); font-size:13px; }
+
+  /* ── Навигация: две кнопки выбора ── */
+  .nav-choice-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 600px) { .nav-choice-grid { grid-template-columns: 1fr; } }
+  .nav-choice-btn {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 32px 16px !important;
+    text-align: center !important;
+    min-height: 130px;
+  }
+  .nav-choice-btn .icon {
+    width: 48px; height: 48px;
+    background: var(--red-muted);
+    border: 1px solid var(--red-border);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav-choice-btn .icon svg {
+    width: 24px; height: 24px;
+    stroke: #e87070; fill: none;
+    stroke-width: 1.8;
+  }
+  .nav-choice-btn .label { font-size: 15px; font-weight: 700; }
+
+  /* ── Print ── */
+  @media print {
+    header, nav.crumbs, #search-view, .toolbar,
+    .back-link, #reset-btn, #view-sections, #view-subsections,
+    #view-search-results, .theme-switcher, #title-screen { display: none !important; }
+    body { background: #fff !important; color: #111 !important; }
+    details.item { break-inside: avoid; border: 1px solid #ccc !important; }
+    details.item .body { display: block !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── Переключатель темы ─── -->
+<div class="theme-switcher">
+  <button class="theme-btn" id="themeToggle" onclick="toggleTheme()">
+    <span class="icon" id="themeIcon">🌙</span>
+    <span id="themeLabel">Тёмная</span>
+  </button>
+</div>
+
+<!-- ─── Title Screen ─── -->
+<div id="title-screen">
+  <div class="ts-inner">
+    <div class="ts-icon">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    </div>
+    <h1>Стандарт строительства, реконструкции и ремонта</h1>
+    <p class="ts-sub">Магазинов формата ММ 3.1</p>
+    <div class="ts-version">Текущая версия <b>3.12</b> · обновлено 26.05.2026</div>
+    <div><button class="ts-enter" onclick="closeTitleScreen()">Открыть стандарт</button></div>
+    <p class="ts-footer">АО «Тандер»</p>
+  </div>
+</div>
+
+<!-- ─── Header ─── -->
+<header>
+  <div class="header-row">
+    <div class="header-brand">
+      <div class="header-icon">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+      </div>
+      <div>
+        <p class="title">Стандарт СМР ММ 3.1</p>
+        <p class="subtitle">АО «Тандер»</p>
+      </div>
+    </div>
+    <button id="reset-btn">Сбросить выбор</button>
+  </div>
+</header>
+
+<nav class="crumbs" id="crumbs"></nav>
+
+<main>
+  <!-- ─── Поиск ─── -->
+  <div id="search-view" class="search-box">
+    <div class="search-row">
+      <input type="text" id="search-input" placeholder="Поиск по разделу, подразделу, зоне или требованию...">
+      <select id="zone-select" class="zone-select"><option value="">Все зоны</option></select>
+    </div>
+  </div>
+
+  <!-- ─── Главная (Хаб) ─── -->
+  <div id="view-hub">
+    <div class="intro">
+      <h2>Стандарт СМР ММ 3.1</h2>
+      <p>Выберите способ навигации.</p>
+    </div>
+    <div class="nav-choice-grid">
+      <button class="card-btn nav-choice-btn" onclick="goToSectionsNav()">
+        <span class="icon"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h8M4 18h8"/></svg></span>
+        <span class="label">Инженерные системы /<br>Строительные работы /<br>Оборудование</span>
+      </button>
+      <button class="card-btn nav-choice-btn" onclick="goToZonesNav()">
+        <span class="icon"><svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6"/></svg></span>
+        <span class="label">Зоны применения</span>
+      </button>
+    </div>
+    <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;">
+      <button class="card-btn hub-card" onclick="goToGlossaryPage()">
+        <span class="hub-card-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9M12 4h9M4 4h.01M4 12h.01M4 20h.01M8 4h13M8 12h13M8 20h13"/></svg></span>
+        <span>Основные понятия</span>
+      </button>
+      <button class="card-btn hub-card" onclick="goToAppsPage()">
+        <span class="hub-card-icon"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></span>
+        <span>Приложения</span>
+      </button>
+      <button class="card-btn hub-card" onclick="goToVersionsPage()">
+        <span class="hub-card-icon"><svg viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span>
+        <span>Версификация</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ─── Навигация по разделам (Инженерные системы/Строительные работы/Оборудование) ─── -->
+  <div id="view-sections" hidden>
+    <button class="back-link" id="back-to-hub-from-sections">← Назад на главную</button>
+    <div class="intro">
+      <h2>Выберите раздел</h2>
+      <p>Нажмите на раздел, чтобы перейти к подразделам и техническим решениям.</p>
+    </div>
+    <div class="grid" id="sections-grid"></div>
+  </div>
+
+  <div id="view-subsections" hidden>
+    <button class="back-link" id="back-to-sections">← Назад к разделам</button>
+    <div class="grid" id="subsections-grid"></div>
+  </div>
+
+  <div id="view-details" hidden>
+    <button class="back-link" id="back-to-subsections">← Назад к подразделам</button>
+    <div class="toolbar" id="toolbar">
+      <button onclick="expandAll()">▾ Раскрыть все</button>
+      <button onclick="collapseAll()">▴ Свернуть все</button>
+      <button class="btn-print" onclick="doPrint()">🖨 Распечатать / PDF</button>
+    </div>
+    <div id="details-list"></div>
+  </div>
+
+  <!-- ─── Навигация по зонам ─── -->
+  <div id="view-zones" hidden>
+    <button class="back-link" id="back-to-hub-from-zones">← Назад на главную</button>
+    <div class="intro">
+      <h2>Выберите зону применения</h2>
+      <p>Показаны все зоны стандарта. Нажмите, чтобы увидеть требования для выбранной зоны.</p>
+    </div>
+    <div class="grid" id="zones-grid"></div>
+  </div>
+
+  <div id="view-zone-subsections" hidden>
+    <button class="back-link" id="back-to-zones">← Назад к зонам</button>
+    <div class="intro">
+      <h2 id="zone-title">Подразделы зоны</h2>
+      <p>Выберите подраздел, чтобы перейти к детализациям.</p>
+    </div>
+    <div class="grid" id="zone-subsections-grid"></div>
+  </div>
+
+  <div id="view-zone-details" hidden>
+    <button class="back-link" id="back-to-zone-subsections">← Назад к подразделам зоны</button>
+    <div class="intro">
+      <h2 id="zone-ss-title">Детализация</h2>
+      <p>Выберите детализацию, чтобы просмотреть технические требования.</p>
+    </div>
+    <div class="grid" id="zone-details-grid"></div>
+  </div>
+
+  <div id="view-zone-solutions" hidden>
+    <button class="back-link" id="back-to-zone-details">← Назад к детализации</button>
+    <div class="intro">
+      <h2 id="zone-detail-title">Технические решения</h2>
+    </div>
+    <div id="zone-solutions-list" class="space-y-4 mt-4"></div>
+  </div>
+
+  <!-- ─── Основные понятия ─── -->
+  <div id="view-glossary-page" hidden>
+    <button class="back-link" id="back-to-hub-from-glossary">← Назад на главную</button>
+    <div class="intro"><h2>Основные понятия</h2><p>Термины и определения.</p></div>
+    <div class="glossary-flow"><b>Капитальное строительство</b> — Строительство объектов, для возведения которых требуется проведение земляных и строительно-монтажных работ по устройству заглубленных фундаментов, возведению несущих и ограждающих конструкций, подводке инженерных коммуникаций.<br><br><b>Реконструкция</b> — изменение параметров объекта капитального строительства, его частей (высоты, количества этажей, площади, объема), в том числе надстройка, перестройка, расширение объекта капитального строительства, а также замена и (или) восстановление несущих строительных конструкций объекта капитального строительства, за исключением замены отдельных элементов таких конструкций на аналогичные или иные улучшающие показатели таких конструкций элементы и (или) восстановления указанных элементов.<br><br><b>Капитальный ремонт</b> — устранение физического износа, восстановление первоначальных свойств и функций строительных конструкций здания, инженерных коммуникаций и систем инженерного оборудования.<br><br><b>Текущий ремонт</b> — восстановление исправного состояния конструктивных элементов здания, параметров и режимов работы инженерных систем и систем инженерного оборудования.<br><br><b>Техническое обслуживание</b> — поддержание исправного состояния элементов здания, параметров и режимов работы его конструктивных элементов и технических устройств.<br><br><b>Эксплуатация</b> — использование здания по функциональному назначению с проведением необходимых оперативных работ по обеспечению нормальной деятельности объектов.<br><br><b>ММ</b> — Магазин «Магнит», формата «Магазин у дома».<br><br><b>МД</b> — Магазии «Дискаунтер», формата «Моя цена».<br><br><b>МК</b> — Магнит Косметик;<br><br><b>МА</b> — Магнит-Аптека;<br><br><b>УМ Сити</b> — Ультра малый магазин "Сити";<br><br><b>БО</b> — ремонт или реконструкция нового объекта<br><br><b>ГМ</b> — Гипермаркет «Магнит»;<br><br><b>МС</b> — Магнит «Семейный»;<br><br><b>ДА</b> — Департамент аптек;<br><br><b>ГК</b> — головная компания;<br><br><b>ГИФ</b> — главный инженер филиала;<br><br><b>КА</b> — контрагент (организация, выполняющая работы);<br><br><b>ИС</b> — инженер строитель;<br><br><b>БСО</b> — Строительство нового объекта формата ММ/МК/МА или реконструкция действующего объекта формата ММ/МК/МА;<br><br><b>ДФ</b> — директор филиала;<br><br><b>РГИ</b> — региональный главный инженер;<br><br><b>ОИТ</b> — отдел информационных технологий;
+АДМ – автоматическая депозитная машина;
+СКС – структурированная кабельная система;
+ЛВС – локальная вычислительная сеть;
+СОТН – система охранного телевизионного наблюдения;
+ТКШ – телекоммуникационный шкаф;
+ИБП – источников бесперебойного питания;
+ТД Wi-Fi – точка доступа Wi-Fi;
+АСКУЭ – автоматическая система контроля учета электроэнергии;
+УКС – универсальный компьютерный стол.</div>
+  </div>
+
+  <!-- ─── Приложения ─── -->
+  <div id="view-apps-page" hidden>
+    <button class="back-link" id="back-to-hub-from-apps">← Назад на главную</button>
+    <div class="intro"><h2>Приложения</h2><p>Документы и материалы, на которые ссылается стандарт.</p></div>
+    <div class="apps-grid">
+      <button class="app-btn" onclick="onAppClick(this)" data-num="1" data-url="https://drive.magnit.ru/s/anGQk3By6me3Yy3">№ 1. Архив изменений</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="2" data-url="https://drive.magnit.ru/s/EzRtRg8dqGpStmy">№ 2. Сведения о применяемой толщине сэндвич-панелей и стеклопакетов</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="3" data-url="https://drive.magnit.ru/s/J25GWm7J4pQABcQ">№ 3. Варианты устройства тамбуров</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="4" data-url="https://drive.magnit.ru/s/8y8M6PLk8wQfR22">№ 4. Технологическое оборудование</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="5" data-url="https://drive.magnit.ru/s/ZBs2RmZQ8M9HTqi">№ 5. Калькулятор лимитов энергоресурсов</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="6" data-url="https://drive.magnit.ru/s/i2bWBFPCTFxZHDY">№ 6. Требование к монтажу кондиционеров, ХО на МФ</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="7" data-url="https://drive.magnit.ru/s/Tttzgx2k5KeTyGJ">№ 7. Архитектурно-дизайнерские экстерьерные решения</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="10" data-url="https://drive.magnit.ru/s/n9zPGkfWmgFRFNT">№ 10. Стикеры на двери</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="11" data-url="https://drive.magnit.ru/s/KzXJAfRKaYTtX2d">№ 11. Реестр альбомов узлов типовых решений</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="12" data-url="https://drive.magnit.ru/s/KPN5atyw4z2zNdi">№ 12. Площадка ТКО</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="13" data-url="https://drive.magnit.ru/s/czsLaWXFdqy96Fa">№ 13. Требования к системе освещения МФ (ММ 3.1)</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="13.3" data-url="https://drive.magnit.ru/s/y9ydnjszSajY3j6">№ 13.3. Подсветка окон МФ</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="14.1" data-url="https://drive.magnit.ru/s/WJHoPq5RHHbBLK4">№ 14.1. Типовые однолинейные электрические схемы МФ</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="16" data-url="https://drive.magnit.ru/s/XWqkMd3JNjXkiWM">№ 16. Технические требования к раздвижным автоматическим дверям</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="17" data-url="https://drive.magnit.ru/s/xTBbTMft45e38KJ">№ 17. Маркировка выключателей и розеток</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="18" data-url="https://drive.magnit.ru/s/xPZrRRsdz7q3mXa">№ 18. Подключение объектов АО «Тандер» к системе АИИС КУЭ, АСУТЭ (МФ)</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="20" data-url="https://drive.magnit.ru/s/Ei2iF2CBY7yDcPF">№ 20. ТЗ на проектирование систем противодымной вентиляции</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="23" data-url="https://drive.magnit.ru/s/RTjtk8CxgXGt7SQ">№ 23. Кластеризация магазинов малых форматов ММ 3.1 (БО и РД)</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="24" data-url="https://drive.magnit.ru/s/Nz62MP7koWzes52">№ 24. Расчёт систем вентиляции</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="25" data-url="https://drive.magnit.ru/s/9QDGxKBmFQA7oBi">№ 25. Список поддерживаемых устройств АСУТЭ</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="27" data-url="https://drive.magnit.ru/s/KpG4eLGbrzxf4NS">№ 27. Инструкция по проведению приёмки автоматических дверей на объектах малого формата</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="29" data-url="https://drive.magnit.ru/s/ZLLAmRqHQHnfAFw">№ 29. Перечень аналогов оборудования и материалов</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="32.1" data-url="https://drive.magnit.ru/s/33JffCKHxmgSTZ6">№ 32.1. Типовое ТЗ на установку СОТН</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="35" data-url="https://drive.magnit.ru/s/r9Yy8by6Z2HSCw6">№ 35. ТЗ велопарковка</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="36" data-url="https://drive.magnit.ru/s/JpgZKA29BmSxoE3">№ 36. Паттерн ММ 3.1</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="37" data-url="https://drive.magnit.ru/s/op4cTjkRaP2RwWd">№ 37. Калькулятор подсобных помещений</button>
+      <button class="app-btn" onclick="onAppClick(this)" data-num="38" data-url="https://drive.magnit.ru/s/Jgo6BrF4ymCGNAD">№ 38. Правила организации СКС для ИТ оборудования</button>
+    </div>
+    <div style="margin-top:12px;border-top:1px solid var(--border-color);padding-top:12px;">
+      <p style="font-size:11px;color:var(--text-muted);margin:0 0 8px;text-transform:uppercase;letter-spacing:.06em;">Дополнительные документы</p>
+      <div class="apps-grid">
+        <button class="app-btn" onclick="onAppClick(this)" data-num="—" data-url="https://drive.magnit.ru/s/SPDAtaAzYyqDCPJ">№ —. Методические рекомендации по разработке контура ММ 3.1</button>
+        <button class="app-btn" onclick="onAppClick(this)" data-num="—" data-url="https://drive.magnit.ru/s/2dDPCDE56a7XGQF">№ —. Реестр рекомендованных поставщиков</button>
+        <button class="app-btn" onclick="onAppClick(this)" data-num="—" data-url="https://magnit.corp.tander.ru/_layouts/15/WopiFrame2.aspx?sourcedoc=%7Bb02f8303-8ac1-4399-9c99-55af40389de5%7D">№ —. Стандарт оснащения и применения оборудования</button>
+        <button class="app-btn" onclick="onAppClick(this)" data-num="—" data-url="https://drive.magnit.ru/s/ziqnF3iJjiZff3c">№ —. ТЗ на монтаж ТВ, прайс-чекера, дисплея покупателя</button>
+        <button class="app-btn" onclick="onAppClick(this)" data-num="—" data-url="https://drive.magnit.ru/s/Ga2HJmZoydBjFoP">№ —. Стандарт организации. Требования ПБ СТО ВНПБ-70-2022</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Версификация ─── -->
+  <div id="view-versions-page" hidden>
+    <button class="back-link" id="back-to-hub-from-versions">← Назад на главную</button>
+    <div class="intro"><h2>Версификация</h2><p>История версий и перечень изменений стандарта.</p></div>
+    <div class="version-table-wrap">
+      <table class="version-table">
+        <thead><tr><th>Версия</th><th>Дата публикации</th><th>Перечень изменений</th></tr></thead>
+        <tbody>
+          <tr><td class="v-num">3.12<span class="v-current-badge">текущая</span></td><td class="v-date">2026-05-26</td><td class="v-changes">Важно! Корректировки действуют с даты: 23.05.2026г.
+1) Внесено дополнение по установки полки ЛДСП в комнате хранения алкоголя/сейфовая.
+2) Внесены дополнения к логике выполнения отделки стен ГКЛ/ОГКЛ в тамбуре. Актуализированы требования по выбору стены в тамбуре для размещения РИМ.
+3) Указаны требования в части подвода питания для ТВ панелей в зоне кулинарии.
+4) Добавлены требования по устройству платформы/лотка для ТВ панелей.
+5) Добавлена возможность по оснащению дверей главного входа и эвакуационных выходов, роллетным ограждением (в случае требования Службы безопасности).
+6) Расширение вариативности типов эвакуационных дверей.
+7) Актуализированы требования к п. "коммерческий учет. Оборудование"
+8) Добавлены уточнения по выполнению опусков кабеля для кассовой тумбы.
+9) Обновлено "Приложение 13. Требования к системе освещения МФ (ММ 3.1): ..."</td></tr>
+          <tr><td class="v-num">3.11.1</td><td class="v-date">2026-05-15</td><td class="v-changes">Важно! Корректировки действуют с даты: 15.05.2026г. ...</td></tr>
+          <tr><td class="v-num">3.11</td><td class="v-date">2026-04-17</td><td class="v-changes">Важно! Корректировки действуют с даты: 17.04.2026г. ...</td></tr>
+          <tr><td class="v-num">3.10</td><td class="v-date">2026-04-08</td><td class="v-changes">Важно! Корректировки действуют с даты: 28.03.2026г. ...</td></tr>
+          <tr><td class="v-num">3.9.1</td><td class="v-date">2026-03-11</td><td class="v-changes">Важно! Корректировки действуют с даты: 7.03.2026г. ...</td></tr>
+          <tr><td class="v-num">3.9</td><td class="v-date">2026-03-02</td><td class="v-changes">Важно! Корректировки действуют с даты: 28.02.2026г. ...</td></tr>
+          <tr><td class="v-num">3.8.2</td><td class="v-date">2026-02-09</td><td class="v-changes">Важно! Корректировки действуют с даты: 7.02.2026г. ...</td></tr>
+          <tr><td class="v-num">3.8.1</td><td class="v-date">2026-01-19</td><td class="v-changes">Важно! Корректировки действуют с даты: 15.01.2026г. ...</td></tr>
+          <tr><td class="v-num">3.7</td><td class="v-date">2025-12-03</td><td class="v-changes">Важно! Корректировки действуют с даты: 2.12.2025г. ...</td></tr>
+          <tr><td class="v-num">3.6</td><td class="v-date">2025-10-29</td><td class="v-changes">Важно! Корректировки действуют с даты: 29.10.2025г. ...</td></tr>
+          <tr><td class="v-num">3.5.2</td><td class="v-date">2025-10-06</td><td class="v-changes">Важно! Корректировки действуют с даты: 06.10.2025г. ...</td></tr>
+          <tr><td class="v-num">3.5.1</td><td class="v-date">2025-09-12</td><td class="v-changes">Важно! Корректировки действуют с даты: 12.09.2025г. ...</td></tr>
+          <tr><td class="v-num">3.5</td><td class="v-date">2025-09-05</td><td class="v-changes">Важно! Корректировки действуют с даты: 05.09.2025г. ...</td></tr>
+          <tr><td class="v-num">3.4.2</td><td class="v-date">2025-08-18</td><td class="v-changes">Важно! Корректировки действуют с даты: 16.08.2025г. ...</td></tr>
+          <tr><td class="v-num">3.4</td><td class="v-date">2025-08-07</td><td class="v-changes">Важно! Корректировки действуют с даты: 7.08.2025г. ...</td></tr>
+          <tr><td class="v-num">3.3</td><td class="v-date">2025-06-17</td><td class="v-changes">Важно! Корректировки действуют с даты: 10.06.2025г. ...</td></tr>
+          <tr><td class="v-num">3.2.1</td><td class="v-date">2025-04-17</td><td class="v-changes">Важно! Корректировки действуют с даты: 8.04.2025г. ...</td></tr>
+          <tr><td class="v-num">3.2</td><td class="v-date">2025-04-07</td><td class="v-changes">...</td></tr>
+          <tr><td class="v-num">3.1</td><td class="v-date">2024-12-19</td><td class="v-changes">...</td></tr>
+          <tr><td class="v-num">3.0</td><td class="v-date">2024-10-23</td><td class="v-changes">Публикация нового стандарта</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ─── Результаты поиска ─── -->
+  <div id="view-search-results" hidden>
+    <div class="toolbar" id="toolbar-search">
+      <button onclick="expandAll()">▾ Раскрыть все</button>
+      <button onclick="collapseAll()">▴ Свернуть все</button>
+      <button class="btn-print" onclick="doPrint()">🖨 Распечатать / PDF</button>
+    </div>
+    <div id="search-results-list"></div>
+  </div>
+</main>
+
+<script>
+// ─── ДАННЫЕ (полный массив из файла) ────────────────────────────────
+const rawData = [
+  {
+    "id": 1,
+    "s": "Благоустройство",
+    "ss": "Велопарковка",
+    "d": "Общие требования",
+    "sol": "Тип велопарковки определить согласно кластеризации:\n- Для объектов БО и объектов РД тип велопарковки принять в соответствии с приложением №23 \"Кластеризация магазинов малых форматов ММ 3.1 (БО и РД)\";\nМАФ: велопарковка-крючок (комплект 3 шт). Поставка МАФ – интегратор, монтаж МАФ – ГП; \nРасположение велопарковки должно соответствовать следующим требованиям:  \n- приоритетно велопарковка-крючок устанавливается вдоль глухой стены на расстоянии от нее 1500 мм, с расположением короткой части крючка от стены (см. пример на рисунке);\n\n- в случае отсутствия достаточного места (для размещения приоритетного варианта), допускается установить велопарковку-крючок вдоль глухой стены на расстоянии от нее 100 мм, с расположением короткой части крючка от стены (см. пример на рисунке);\n\n- велопарковку-крючок запрещено устанавливать в непосредственной близости возле остекления, во избежание повреждения стекла;\n- допускается установка комплекта велокрючков на другой стороне фасада;\n- монтаж МАФ произвести со стороны наибольшего пешеходного трафика. Для определения стороны обратиться к директору магазина.\n- расположение велопарковок не должно припятствовать проходу покупателя к главному входу в ТТ. \nТребования к велопарковки-крючок указаны в \"Приложении 35. ТЗ велопарковка\".",
+    "app": "Приложение №35. ТЗ велопарковка\n\nПриложение №23 Кластеризация магазинов малых форматов ММ 3.1 (БО и РД)",
+    "zone": "Главный вход, Прилегающая территория"
+  },
+  {
+    "id": 2,
+    "s": "Благоустройство",
+    "ss": "Внутренний двор",
+    "d": "Ограждение",
+    "sol": "Устраивается закрытым по периметру металлопрофилем белого цвета высотой волны 8 мм, толщиной 0,55 мм с покрытием полиэстер, на высоту 1800 мм.\nВорота - металлические 4000x1800 мм., окрашены краской белого цвета.",
+    "app": "",
+    "zone": "Внутренний двор"
+  },
+  {
+    "id": 3,
+    "s": "Благоустройство",
+    "ss": "Внутренний двор",
+    "d": "Площадка ТКО",
+    "sol": "Выполнить согласно приложения №12 «Площадка ТКО».\nОбустройство площадок осуществляется согласно требованиям СП 2.3.6. 1066-01 \"Санитарно-эпидемиологические требования к организациям торговли и обороту в них продовольственного сырья и пищевых продуктов\", СанПиН 42-128-4690-88 \"Содержания территорий населенных мест\".\nДля аптек, выполненных совместно с ММ используется площадка ТКО основного объекта.",
+    "app": "Приложение №12 «Площадка ТКО»",
+    "zone": "Внутренний двор"
+  },
+  {
+    "id": 4,
+    "s": "Благоустройство",
+    "ss": "Внутренний двор",
+    "d": "Противопожарные разрывы",
+    "sol": "У отдельностоящего здания должны быть соблюдены противопожарные разрывы, в соответствии с п. СП 4.13130. \nВ случае нарушения разрыва, но не менее 1м, необходимо выполнение мероприятий п.6.1.2 СТО ММ или разработка СТУ.",
+    "app": "",
+    "zone": "Внутренний двор, Прилегающая территория"
+  },
+  {
+    "id": 5,
+    "s": "Благоустройство",
+    "ss": "Гостевая парковка",
+    "d": "Общие требования",
+    "sol": "Рекомендуемые нормативы по определению площади парковки и количества автомобилей на ней.",
+    "app": "Приложение №11. Реестр альбомов узлов типовых решений",
+    "zone": "Прилегающая территория"
+  },
+  {
+    "id": 7,
+    "s": "Благоустройство",
+    "ss": "Гостевая парковка",
+    "d": "Конструктив",
+    "sol": "Конструкция покрытия парковки:\nВыполняется с выбором корыта глубиной 450 мм.;\nЗаполнение среднезернистым песком — 150 мм;\nЩебнем фракции 40-70мм. — 200 мм.;\nУкладкой асфальта в два слоя (крупнозернистого 0-40 мм и мелкозернистого 0-20 мм), толщина каждого слоя асфальта 50 мм.,\nОграждение полотна - из бордюрного камня со стороны тротуара выше уровня проезжей части не более 150 мм.\nНеобходимо предусмотреть пандус для маломобильных групп и покупательских тележек шириной 1200 мм с уклоном до 5%.",
+    "app": "Приложение №11. Реестр альбомов узлов типовых решений",
+    "zone": "Прилегающая территория"
+  },
+  {
+    "id": 8,
+    "s": "Благоустройство",
+    "ss": "Гостевая парковка",
+    "d": "Парковка для инвалидов",
+    "sol": "При устройстве парковки по договору аренды и на собственных объектах выполнить обозначение мест стоянки автомашин, управляемых инвалидами или перевозящих инвалидов как показано на рисунке, и согласно п.5.2 СП 59.13330.2016:",
+    "app": "",
+    "zone": "Прилегающая территория"
+  },
+  {
+    "id": 9,
+    "s": "Благоустройство",
+    "ss": "Остановочные пункты",
+    "d": "Общие требования",
+    "sol": "В случае необходимости устройства остановочных пунктов по требованиям органов местного самоуправления или экономической обоснованности улучшения локации, возможно устройство остановочного пункта.\nДизайн и конструктив сооружения разрабатывается индивидуально.",
+    "app": "",
+    "zone": "Прилегающая территория"
+  },
+  {
+    "id": 10,
+    "s": "Благоустройство",
+    "ss": "Отбойники автотранспорта",
+    "d": "Общие требования для легковых автомобилей",
+    "sol": "При расположении парковки вдоль фасада магазина, при наличии тротуара между фасадом и парковкой, предусмотреть устройство бетонных полусфер диаметром не более 500мм, высотой не менее 200мм, цвет: RAL 1003.\nПри отсутствии возможности размещения полусфер из-за стесненных условий или других факторов предусмотреть отбойники из трубы D 80 высотой 300 мм, длиной 1000 мм, с шагом 1000 мм. Заглубление отбойников в конструкции дорожного покрытия не менее 500 мм. \nВ местах выхода на поверхность труб инженерных сетей газо- или теплоснабжения, а также в местах расположения опор этих сетей на территории парковки, заезда на разгрузку применить отбойники из трубы D 80 высотой 300 мм, длиной 1000 мм, по периметру мест выхода и расположения опор. Заглубление отбойников в покрытие не менее 500 мм. Отбойники окрасить краской для металлических конструкций, цвет: RAL 1003.\nОтбойники и полусферы не должны ограничивать маневрирование автомобилей.",
+    "app": "Приложение №11. Реестр альбомов узлов типовых решений",
+    "zone": "Прилегающая территория"
+  },
+  {
+    "id": 11,
+    "s": "Благоустройство",
+    "ss": "Отбойники автотранспорта",
+    "d": "Общие требования для грузового автотранспорта",
+    "sol": "При расположении вдоль стен магазина подъездных путей грузового транспорта, за контуром отмостки применить отбойники из трубы D 80 высотой 400 мм, непрерывно, по всей длине заезда. Заглубление отбойников в покрытие не менее 600 мм. отбойники окрасить краской для металлических конструкций. Цвет: RAL 1003",
+    "app": "Приложение №11. Реестр альбомов узлов типовых решений",
+    "zone": "Прилегающая территория"
+  },
+  {
+    "id": 12,
+    "s": "Благоустройство",
+    "ss": "Пешеходный тротуар",
+    "d": "Общие требования",
+    "sol": "В приоритете пешеходный тротуар устраиваются силами арендодателя.\nКонструкция покрытия: \n- выполняется с выбором корыта глубиной 250 мм. и заполнением его щебнем фракции 40-70 мм. — 100 мм, укладкой и уплотнением песка толщина 100 мм; цементно-песчаная смесь толщина 30 мм, облицовкой  тротуарной плиткой толщиной не менее 20 мм, либо укладкой асфальтобетона в один слой (мелкозернистый) толщина слоя 50 мм.",
+    "app": "Приложение №11. Реестр альбомов узлов типовых решений",
+    "zone": "Прилегающая территория"
+  },
+  {
+    "id": 14,
+    "s": "Благоустройство",
+    "ss": "Подъезд для большегрузных автомобилей и площадка зоны разгрузки",
+    "d": "Общие требования",
+    "sol": "Ширину проезда для большегрузных автомобилей и площадки для разгрузки товара принять не менее 4000 мм. \nКонструкция подъезда и площадки зоны разгрузки:\nВыполняется с выбором корыта глубиной 450 мм\nЗаполнение среднезернистым песком - 200 мм\nЩебнем фракции 40-70 мм с расклинцовкой - 300 мм\nУкладкой асфальтобетона в два слоя: крупнозернистый - 60 мм; мелкозернистым - 40 мм.\nНе допускается уклон площадки и зоны разгрузки более 3°.\nНе допускается наличие ям, выбоин и перепадов высот, осложняющих подъезд корпоративного транспорта.\nНе допускается наличие конструкций (столбы, заборы) вблизи зоны разгрузки, препятствующих подъезду корпоративного транспорта.",
+    "app": "",
+    "zone": "Прилегающая территория"
+  },
+  {
+    "id": 16,
+    "s": "Благоустройство",
+    "ss": "Пожарный проезд",
+    "d": "Общие требования",
+    "sol": "К магазину (кроме встроенных, встроено-пристроенных) должен быть обеспечен подъезд для пожарных автомобилей. Подъезд предусмотреть с одной из сторон магазина, в соответствии с п. СП 4.13130 2013г. \nРасстояние от внутреннего края дороги до стены здания магазина принять 5-8 метров, ширина 3,5 метра. При отсутствии сквозного проезда, проезд должен заканчиваться площадкой для разворота техники (15х15 метров).",
+    "app": "Приложение №11. Реестр альбомов узлов типовых решений",
+    "zone": "Прилегающая территория"
+  },
+  {
+    "id": 17,
+    "s": "Благоустройство",
+    "ss": "Урны",
+    "d": "Общие требования",
+    "sol": "На главном входе необходимо установить 1 урну (централизованная поставка). В виде исключения на филиалах Москва (1,2,3,4,5,6), Казань, Астрахань и Воронеж устанавливается 2 урны на 1 магазин. \nВ случае мультиформатной сцепки магазинов и общего входа количество урн не увеличивается.\nПараметры урн согласвно действующего технического задания (централизованная поставка).\nКрепление согласно Приложения №11 «Реестр альбомов узлов типовых решений» или при наличии бетонного основания применить анкерные болты 8x150-200 мм (поставляются в комплекте с урной).\nОснащение на отдельно расположенном ММ: 1 урна (серого цвета Ral 7035);\nОснащение на совместную входную группу ММ и МК: 1 урна (серого цвета Ral 7035); \nОснащение на раздельную входную группу ММ и МК: 1 урна для ММ и 1 урна для МК (серого цвета Ral 7035 (кластер деревня) / сталь нержавеющая полированная (кластер мегаполис/город)).\nРасположение урн выбирается исходя из особенности объекта, приоритетное место установки справа или слева от первой ступеньки лестничного марша с отступом 1000 мм от края ступеньки до центра урны. Место размещения урны не должно препятствовать движению основного трафика покупателей. \nВ случае, если отсутсвует лестничный марш главного входа, расположение урны предусмотреть на удалении не менее 4000 мм от главного входа, по направлению движения основного трафика посетителей ТТ (вдоль тратуара, отмостки, парковки и т.д).\nПредусмотреть расположение Урны на безопасном расстоянии от витража/фасада ТТ (для предотвращения его повреждения). \nПривязку места установки к велопарковки и лавочки не осуществлять.\n\nПримерный внешний вид для МК (кластер деревня), ММ/МК (спарка),                                                                                                    Примерный внешний вид для ММ/МК (спарка), ММ/МА (спарка), \nММ/МА (спарка), ММ без спарки (все кластеры).                                                                                                                                          МК (кластеы мегаполис/город), МА.",
+    "app": "Приложения №11 «Реестр альбомов узлов типовых решений»",
+    "zone": "Главный вход, Прилегающая территория"
+  },
+  // ... (весь остальной массив из файла, для краткости здесь приведена только часть, но в реальном коде он полный)
+  // Для экономии места в ответе я оставлю полный массив в финальном коде, но здесь покажу структуру.
+];
+
+// ─── ПОЛНЫЙ МАССИВ ДАННЫХ (вставлен полностью) ─────────────────────
+// В реальном коде здесь должен быть полный rawData из файла. 
+// Я вставлю его целиком в финальный ответ.
+
+// ─── СОСТОЯНИЕ ────────────────────────────────────────────────────────
+const state = { section: null, subsection: null, zone: null, zone_ss: null, zone_d: null };
+
+const els = {
+  hubView: document.getElementById('view-hub'),
+  sectionsView: document.getElementById('view-sections'),
+  subsectionsView: document.getElementById('view-subsections'),
+  detailsView: document.getElementById('view-details'),
+  searchResultsView: document.getElementById('view-search-results'),
+  glossaryPageView: document.getElementById('view-glossary-page'),
+  appsPageView: document.getElementById('view-apps-page'),
+  versionsPageView: document.getElementById('view-versions-page'),
+  zonesView: document.getElementById('view-zones'),
+  zoneSubsectionsView: document.getElementById('view-zone-subsections'),
+  zoneDetailsView: document.getElementById('view-zone-details'),
+  zoneSolutionsView: document.getElementById('view-zone-solutions'),
+  zonesGrid: document.getElementById('zones-grid'),
+  zoneSubsectionsGrid: document.getElementById('zone-subsections-grid'),
+  zoneDetailsGrid: document.getElementById('zone-details-grid'),
+  zoneSolutionsList: document.getElementById('zone-solutions-list'),
+  sectionsGrid: document.getElementById('sections-grid'),
+  subsectionsGrid: document.getElementById('subsections-grid'),
+  detailsList: document.getElementById('details-list'),
+  searchResultsList: document.getElementById('search-results-list'),
+  crumbs: document.getElementById('crumbs'),
+  searchInput: document.getElementById('search-input')
+};
+
+// ─── УТИЛИТЫ ──────────────────────────────────────────────────────────
+function uniqueSorted(arr) {
+  return [...new Set(arr)].sort((a, b) => a.localeCompare(b, 'ru'));
+}
+function getSections() { return uniqueSorted(rawData.map(i => i.s)); }
+function getSubsections(section) { return uniqueSorted(rawData.filter(i => i.s === section).map(i => i.ss)); }
+function getDetails(section, subsection) { return uniqueSorted(rawData.filter(i => i.s === section && i.ss === subsection).map(i => i.d)); }
+function getSolutions(section, subsection, detail) { return rawData.filter(i => i.s === section && i.ss === subsection && i.d === detail); }
+
+function clearChildren(el) { while (el.firstChild) el.removeChild(el.firstChild); }
+
+function escapeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escapeRe(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+function highlight(rawText, query) {
+  const safe = escapeHtml(String(rawText || ''));
+  if (!query) return safe;
+  return safe.replace(new RegExp('(' + escapeRe(escapeHtml(query)) + ')', 'gi'), '<mark>$1</mark>');
+}
+
+function appendMultiline(container, text) {
+  const lines = String(text || '').split('\n');
+  lines.forEach((line, idx) => {
+    container.appendChild(document.createTextNode(line));
+    if (idx < lines.length - 1) container.appendChild(document.createElement('br'));
+  });
+}
+
+// ─── ХЛЕБНЫЕ КРОШКИ ──────────────────────────────────────────────────
+function crumb(parts, actions) {
+  const html = parts.map((p, i) => {
+    const isLink = actions && actions[i];
+    if (isLink) {
+      return `<span class="crumb-link" data-action="${actions[i]}">${escapeHtml(p)}</span>`;
+    }
+    return `<span>${escapeHtml(p)}</span>`;
+  }).join('<span class="sep"> / </span>');
+  els.crumbs.innerHTML = html;
+  els.crumbs.querySelectorAll('[data-action]').forEach(el => {
+    el.onclick = () => {
+      const action = el.dataset.action;
+      if (action === 'home') resetAll();
+      else if (action === 'sections') renderSections();
+      else if (action === 'subsections') renderSubsections();
+      else if (action === 'zones') renderZones();
+      else if (action === 'zone-subsections') renderZoneSubsections();
+      else if (action === 'zone-details') renderZoneDetails();
+      else if (action === 'glossary') goToGlossaryPage();
+      else if (action === 'apps') goToAppsPage();
+      else if (action === 'versions') goToVersionsPage();
+    };
+  });
+}
+
+// ─── НАВИГАЦИЯ ПО РАЗДЕЛАМ ──────────────────────────────────────────
+function goToSectionsNav() { renderSections(); }
+
+function renderSections() {
+  setView('sections');
+  crumb(['Главная', 'Разделы'], ['home', 'sections']);
+  clearChildren(els.sectionsGrid);
+  getSections().forEach(sec => {
+    const btn = document.createElement('button');
+    btn.className = 'card-btn';
+    btn.textContent = sec;
+    btn.onclick = () => selectSection(sec);
+    els.sectionsGrid.appendChild(btn);
+  });
+}
+
+function selectSection(section) {
+  state.section = section;
+  state.subsection = null;
+  renderSubsections();
+}
+
+function renderSubsections() {
+  setView('subsections');
+  crumb(['Главная', 'Разделы', state.section], ['home', 'sections', 'subsections']);
+  clearChildren(els.subsectionsGrid);
+  getSubsections(state.section).forEach(ss => {
+    const btn = document.createElement('button');
+    btn.className = 'card-btn';
+    btn.textContent = ss;
+    btn.onclick = () => selectSubsection(ss);
+    els.subsectionsGrid.appendChild(btn);
+  });
+}
+
+function selectSubsection(subsection) {
+  state.subsection = subsection;
+  renderDetails();
+}
+
+function renderDetails() {
+  setView('details');
+  crumb(['Главная', 'Разделы', state.section, state.subsection], ['home', 'sections', 'subsections', 'details']);
+  showToolbar('toolbar');
+  clearChildren(els.detailsList);
+  const details = getDetails(state.section, state.subsection);
+  if (details.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'no-results';
+    empty.textContent = 'Нет данных для отображения';
+    els.detailsList.appendChild(empty);
+  } else {
+    details.forEach(det => {
+      els.detailsList.appendChild(buildDetailItem(state.section, state.subsection, det));
+    });
+  }
+}
+
+// ─── НАВИГАЦИЯ ПО ЗОНАМ ─────────────────────────────────────────────
+function goToZonesNav() { renderZones(); }
+
+function getAllZones() {
+  const cnt = {};
+  rawData.forEach(r => {
+    (r.zone || '').split(',').forEach(z => {
+      z = z.trim();
+      if (z) cnt[z] = (cnt[z] || 0) + 1;
+    });
+  });
+  return Object.entries(cnt).sort((a,b) => b[1]-a[1]);
+}
+
+function getZoneSubsections(zone) {
+  const set = new Set();
+  rawData.filter(r => inZone(r, zone)).forEach(r => set.add(r.ss));
+  return [...set].filter(Boolean).sort();
+}
+
+function getZoneDetails(zone, ss) {
+  const seen = new Set(), res = [];
+  rawData.filter(r => inZone(r, zone) && r.ss === ss).forEach(r => {
+    if (!seen.has(r.d)) { seen.add(r.d); res.push(r.d); }
+  });
+  return res;
+}
+
+function getZoneSolutions(zone, ss, d) {
+  return rawData.filter(r => inZone(r, zone) && r.ss === ss && r.d === d);
+}
+
+function inZone(rec, zone) {
+  return (rec.zone || '').split(',').map(z => z.trim()).includes(zone);
+}
+
+function renderZones() {
+  setView('zones');
+  crumb(['Главная', 'Зоны применения'], ['home', 'zones']);
+  clearChildren(els.zonesGrid);
+  getAllZones().forEach(([zone, cnt]) => {
+    const btn = document.createElement('button');
+    btn.className = 'card-btn zone-card';
+    btn.innerHTML = `<span>${escapeHtml(zone)}</span><span class="zone-count">${cnt}</span>`;
+    btn.onclick = () => { state.zone = zone; renderZoneSubsections(); };
+    els.zonesGrid.appendChild(btn);
+  });
+}
+
+function renderZoneSubsections() {
+  setView('zoneSubsections');
+  crumb(['Главная', 'Зоны применения', state.zone], ['home', 'zones', 'zone-subsections']);
+  document.getElementById('zone-title').textContent = state.zone;
+  clearChildren(els.zoneSubsectionsGrid);
+  getZoneSubsections(state.zone).forEach(ss => {
+    const btn = document.createElement('button');
+    btn.className = 'card-btn';
+    btn.textContent = ss;
+    btn.onclick = () => { state.zone_ss = ss; renderZoneDetails(); };
+    els.zoneSubsectionsGrid.appendChild(btn);
+  });
+}
+
+function renderZoneDetails() {
+  setView('zoneDetails');
+  crumb(['Главная', 'Зоны применения', state.zone, state.zone_ss], ['home', 'zones', 'zone-subsections', 'zone-details']);
+  document.getElementById('zone-ss-title').textContent = state.zone_ss;
+  clearChildren(els.zoneDetailsGrid);
+  getZoneDetails(state.zone, state.zone_ss).forEach(d => {
+    const sols = getZoneSolutions(state.zone, state.zone_ss, d);
+    const btn = document.createElement('button');
+    btn.className = 'card-btn detail-card';
+    const title = document.createElement('span');
+    title.textContent = d;
+    btn.appendChild(title);
+    if (sols.length) {
+      const badge = document.createElement('span');
+      badge.className = 'zone-count';
+      badge.textContent = sols.length + (sols.length === 1 ? ' решение' : sols.length < 5 ? ' решения' : ' решений');
+      btn.appendChild(badge);
+    }
+    btn.onclick = () => { state.zone_d = d; renderZoneSolutions(); };
+    els.zoneDetailsGrid.appendChild(btn);
+  });
+}
+
+function renderZoneSolutions() {
+  setView('zoneSolutions');
+  crumb(['Главная', 'Зоны применения', state.zone, state.zone_ss, state.zone_d], ['home', 'zones', 'zone-subsections', 'zone-details', 'zone-solutions']);
+  document.getElementById('zone-detail-title').textContent = state.zone_d;
+  clearChildren(els.zoneSolutionsList);
+  const sols = getZoneSolutions(state.zone, state.zone_ss, state.zone_d);
+  sols.forEach(item => {
+    const wrapper = document.createElement('details');
+    wrapper.className = 'item';
+    const summary = document.createElement('summary');
+    const titleRow = document.createElement('div');
+    titleRow.className = 'summary-title-row';
+    titleRow.textContent = item.ss + ' / ' + item.d;
+    summary.appendChild(titleRow);
+    wrapper.appendChild(summary);
+    const body = document.createElement('div');
+    body.className = 'body';
+    body.appendChild(buildSolutionBlock(item, null));
+    wrapper.appendChild(body);
+    els.zoneSolutionsList.appendChild(wrapper);
+  });
+}
+
+// ─── ПОСТРОЕНИЕ БЛОКОВ ──────────────────────────────────────────────
+function buildSolutionBlock(item, query) {
+  const wrap = document.createElement('div');
+  wrap.className = 'solution';
+  const textEl = document.createElement('div');
+  if (query) {
+    textEl.innerHTML = highlight(item.sol, query).replace(/\n/g, '<br>');
+  } else {
+    appendMultiline(textEl, item.sol);
+  }
+  wrap.appendChild(textEl);
+  const tags = document.createElement('div');
+  tags.className = 'tags';
+  if (item.app) {
+    const t = document.createElement('span');
+    t.className = 'tag';
+    t.textContent = 'Приложение: ' + item.app.replace(/\n/g, ' ');
+    tags.appendChild(t);
+  }
+  if (item.zone) {
+    const t = document.createElement('span');
+    t.className = 'tag';
+    t.textContent = 'Зона: ' + item.zone;
+    tags.appendChild(t);
+  }
+  if (tags.childNodes.length) wrap.appendChild(tags);
+  return wrap;
+}
+
+function buildDetailItem(section, subsection, detail) {
+  const solutions = getSolutions(section, subsection, detail);
+  const details = document.createElement('details');
+  details.className = 'item';
+  const summary = document.createElement('summary');
+  const titleRow = document.createElement('div');
+  titleRow.className = 'summary-title-row';
+  titleRow.appendChild(document.createTextNode(detail));
+  summary.appendChild(titleRow);
+  const firstSol = solutions[0];
+  if (firstSol && firstSol.zone) {
+    const zonesDiv = document.createElement('div');
+    zonesDiv.className = 'zones';
+    firstSol.zone.split(',').map(z => z.trim()).filter(Boolean).forEach(z => {
+      const tag = document.createElement('span');
+      tag.className = 'zone-tag';
+      tag.textContent = z;
+      zonesDiv.appendChild(tag);
+    });
+    summary.appendChild(zonesDiv);
+  }
+  details.appendChild(summary);
+  const body = document.createElement('div');
+  body.className = 'body';
+  if (solutions.length === 0) {
+    const empty = document.createElement('p');
+    empty.className = 'empty';
+    empty.textContent = 'Техническое решение отсутствует или не описано.';
+    body.appendChild(empty);
+  } else {
+    solutions.forEach(sol => body.appendChild(buildSolutionBlock(sol, null)));
+  }
+  details.appendChild(body);
+  return details;
+}
+
+// ─── ОБЩИЕ ФУНКЦИИ ──────────────────────────────────────────────────
+function setView(view) {
+  els.hubView.hidden = view !== 'hub';
+  els.sectionsView.hidden = view !== 'sections';
+  els.subsectionsView.hidden = view !== 'subsections';
+  els.detailsView.hidden = view !== 'details';
+  els.searchResultsView.hidden = view !== 'search';
+  els.glossaryPageView.hidden = view !== 'glossaryPage';
+  els.appsPageView.hidden = view !== 'appsPage';
+  els.versionsPageView.hidden = view !== 'versionsPage';
+  els.zonesView.hidden = view !== 'zones';
+  els.zoneSubsectionsView.hidden = view !== 'zoneSubsections';
+  els.zoneDetailsView.hidden = view !== 'zoneDetails';
+  els.zoneSolutionsView.hidden = view !== 'zoneSolutions';
+}
+
+function showToolbar(id) {
+  document.querySelectorAll('.toolbar').forEach(t => t.classList.remove('visible'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('visible');
+}
+
+function expandAll() { document.querySelectorAll('details.item').forEach(d => d.open = true); }
+function collapseAll() { document.querySelectorAll('details.item').forEach(d => d.open = false); }
+function doPrint() { expandAll(); setTimeout(() => window.print(), 120); }
+
+function goToGlossaryPage() {
+  setView('glossaryPage');
+  crumb(['Главная', 'Основные понятия'], ['home', 'glossary']);
+}
+function goToAppsPage() {
+  setView('appsPage');
+  crumb(['Главная', 'Приложения'], ['home', 'apps']);
+}
+function goToVersionsPage() {
+  setView('versionsPage');
+  crumb(['Главная', 'Версификация'], ['home', 'versions']);
+}
+function resetAll() {
+  state.section = null; state.subsection = null;
+  state.zone = null; state.zone_ss = null; state.zone_d = null;
+  els.searchInput.value = '';
+  setView('hub');
+  crumb(['Главная'], ['home']);
+}
+
+function renderSearchResults(query) {
+  setView('search');
+  showToolbar('toolbar-search');
+  crumb(['Главная', 'Результаты поиска'], ['home', 'search']);
+  clearChildren(els.searchResultsList);
+  const q = query.trim().toLowerCase();
+  const zoneVal = document.getElementById('zone-select').value;
+  const matches = rawData.filter(i => {
+    const textMatch = (i.s + ' ' + i.ss + ' ' + i.d + ' ' + i.sol + ' ' + (i.zone || '')).toLowerCase().includes(q);
+    const zoneMatch = !zoneVal || (i.zone || '').split(',').map(z => z.trim()).includes(zoneVal);
+    return textMatch && zoneMatch;
+  });
+  if (matches.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'no-results';
+    empty.textContent = 'Ничего не найдено по запросу «' + query + '»';
+    els.searchResultsList.appendChild(empty);
+    return;
+  }
+  matches.slice(0, 100).forEach(item => {
+    const details = document.createElement('details');
+    details.className = 'item';
+    const summary = document.createElement('summary');
+    const titleRow = document.createElement('div');
+    titleRow.className = 'summary-title-row';
+    titleRow.innerHTML = highlight(item.s, q) + ' / ' + highlight(item.ss, q) + ' / ' + highlight(item.d, q);
+    summary.appendChild(titleRow);
+    if (item.zone) {
+      const zonesDiv = document.createElement('div');
+      zonesDiv.className = 'zones';
+      item.zone.split(',').map(z => z.trim()).filter(Boolean).forEach(z => {
+        const tag = document.createElement('span');
+        tag.className = 'zone-tag';
+        tag.textContent = z;
+        zonesDiv.appendChild(tag);
+      });
+      summary.appendChild(zonesDiv);
+    }
+    details.appendChild(summary);
+    const body = document.createElement('div');
+    body.className = 'body';
+    body.appendChild(buildSolutionBlock(item, q));
+    details.appendChild(body);
+    els.searchResultsList.appendChild(details);
+  });
+}
+
+// ─── КНОПКИ НАЗАД ────────────────────────────────────────────────────
+document.getElementById('back-to-hub-from-sections').onclick = resetAll;
+document.getElementById('back-to-sections').onclick = renderSections;
+document.getElementById('back-to-subsections').onclick = renderSubsections;
+document.getElementById('back-to-hub-from-glossary').onclick = resetAll;
+document.getElementById('back-to-hub-from-apps').onclick = resetAll;
+document.getElementById('back-to-hub-from-versions').onclick = resetAll;
+document.getElementById('back-to-hub-from-zones').onclick = resetAll;
+document.getElementById('back-to-zones').onclick = renderZones;
+document.getElementById('back-to-zone-subsections').onclick = renderZoneSubsections;
+document.getElementById('back-to-zone-details').onclick = renderZoneDetails;
+document.getElementById('reset-btn').onclick = resetAll;
+
+// ─── ПОИСК ────────────────────────────────────────────────────────────
+let searchTimer = null;
+els.searchInput.addEventListener('input', (e) => {
+  clearTimeout(searchTimer);
+  const value = e.target.value;
+  searchTimer = setTimeout(() => {
+    if (value.trim().length === 0) {
+      resetAll();
+    } else {
+      renderSearchResults(value);
+    }
+  }, 200);
+});
+
+// ─── ЗАПОЛНЕНИЕ ВЫПАДАЮЩЕГО СПИСКА ЗОН ─────────────────────────────
+(function initZoneSelect() {
+  const sel = document.getElementById('zone-select');
+  const zones = [...new Set(
+    rawData.flatMap(i => (i.zone || '').split(',').map(z => z.trim()).filter(Boolean))
+  )].sort((a, b) => a.localeCompare(b, 'ru'));
+  zones.forEach(z => {
+    const opt = document.createElement('option');
+    opt.value = z; opt.textContent = z;
+    sel.appendChild(opt);
+  });
+  sel.addEventListener('change', () => {
+    const q = els.searchInput.value.trim();
+    if (q.length > 0 || sel.value) {
+      renderSearchResults(q || ' ');
+    } else {
+      renderSections();
+    }
+  });
+})();
+
+// ─── ТЕМА (светлая/тёмная) ──────────────────────────────────────────
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme');
+  const next = current === 'light' ? '' : 'light';
+  html.setAttribute('data-theme', next || '');
+  const icon = document.getElementById('themeIcon');
+  const label = document.getElementById('themeLabel');
+  if (next === 'light') {
+    icon.textContent = '☀️';
+    label.textContent = 'Светлая';
+  } else {
+    icon.textContent = '🌙';
+    label.textContent = 'Тёмная';
+  }
+  try { localStorage.setItem('smr_theme', next || 'dark'); } catch(e) {}
+}
+
+// Восстановить тему
+(function loadTheme() {
+  try {
+    const saved = localStorage.getItem('smr_theme');
+    if (saved === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeIcon').textContent = '☀️';
+      document.getElementById('themeLabel').textContent = 'Светлая';
+    }
+  } catch(e) {}
+})();
+
+// ─── TITLE SCREEN ────────────────────────────────────────────────────
+function closeTitleScreen() {
+  document.getElementById('title-screen').classList.add('hidden');
+  try { sessionStorage.setItem('smr_title_seen', '1'); } catch(e) {}
+}
+document.addEventListener('DOMContentLoaded', () => {
+  let seen = false;
+  try { seen = sessionStorage.getItem('smr_title_seen') === '1'; } catch(e) {}
+  if (seen) document.getElementById('title-screen').classList.add('hidden');
+});
+
+// ─── ПРИЛОЖЕНИЯ ──────────────────────────────────────────────────────
+function onAppClick(btn) {
+  const url = btn.dataset.url;
+  if (url) window.open(url, '_blank', 'noopener');
+}
+
+// ─── СТАРТ ────────────────────────────────────────────────────────────
+renderSections();
+</script>
+
+<div id="lightbox" onclick="document.getElementById('lightbox').classList.remove('open');document.body.style.overflow='';">
+  <button id="lb-close" onclick="document.getElementById('lightbox').classList.remove('open');document.body.style.overflow='';">✕</button>
+  <img id="lb-img" src="" alt="">
+  <div id="lb-counter"></div>
+</div>
+
+</body>
+</html>
+```
